@@ -165,7 +165,7 @@ namespace aquarium
         {
             int index = GetNumber("Ведите номер рыбки которую хотите достать");
 
-            for (int i = 0; i < _fishes.Count -1; i++)
+            for (int i = 0; i < _fishes.Count; i++)
             {
                 if (index == i)
                 {
