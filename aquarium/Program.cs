@@ -75,49 +75,42 @@ namespace aquarium
 
     class Fish
     {
-        private int _minimumNumberLives = 0;
+        private int _minimumFishAge = 0;
 
         public string Name { get; private set; }
         public int Age { get; private set; }
-        public int NumberLives { get; private set; }
+        public int MaxAge { get; private set; }
 
 
-        public Fish(string name, int age, int numberLives)
+        public Fish(string name, int age, int maxAge)
         {
             Age = age;
-            NumberLives = numberLives;
+            MaxAge = maxAge;
             Name = name;
         }
    
-        public void ReduceLife()
+        public void AddAge()
         {
-            if (NumberLives > _minimumNumberLives)
+            if (Age <= MaxAge)
             {
                 Age++;
-                NumberLives--;
             }
         }
 
         public bool GetLives()
         {
-            if (NumberLives <= _minimumNumberLives)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return Age <= MaxAge && Age > _minimumFishAge;
         }
     }
 
     class Aquarium
     {
         private List<Fish> _fishes = new List<Fish>();
-        public int CountFishes => _fishes.Count;
 
         private int _maxCountFishes;
         private int _minAgeValue = 1;
+
+        public int CountFishes => _fishes.Count;
 
         public Aquarium(List<Fish> fishs, int maxCountFish)
         {
@@ -129,9 +122,9 @@ namespace aquarium
         {
             for (int i = 0; i < _fishes.Count; i++)
             {
-                _fishes[i].ReduceLife();
+                _fishes[i].AddAge();
 
-                ShowMessage($"Index:{i} Name: { _fishes[i].Name} Age:{ _fishes[i].Age} NumberLives:{ _fishes[i].NumberLives} IsLives:{ _fishes[i].GetLives()}", ConsoleColor.Blue);
+                ShowMessage($"Index:{i} Name: { _fishes[i].Name} Age:{ _fishes[i].Age} MaxAge{_fishes[i].MaxAge} IsLives:{ _fishes[i].GetLives()}", ConsoleColor.Blue);
             }
         
         }
@@ -165,12 +158,9 @@ namespace aquarium
         {
             int index = GetNumber("Ведите номер рыбки которую хотите достать");
 
-            for (int i = 0; i < _fishes.Count; i++)
+            if (index <= 0 && index <= _fishes.Count &&_fishes.Count != 0)
             {
-                if (index == i)
-                {
-                    _fishes.RemoveAt(i);
-                }
+                _fishes.RemoveAt(index);
             }
         }
 
@@ -181,7 +171,7 @@ namespace aquarium
                 ShowMessage("Список рыб", ConsoleColor.Yellow);
                 for (int i = 0; i < _fishes.Count; i++)
                 {
-                    ShowMessage($"{_fishes[i].Name} её возраст {_fishes[i].Age} Количество жизней {_fishes[i].NumberLives}", ConsoleColor.Blue);
+                    ShowMessage($"{_fishes[i].Name} её возраст {_fishes[i].Age} Максимальный  возраст рыбки {_fishes[i].MaxAge}", ConsoleColor.Blue);
                 }
             }
             else
