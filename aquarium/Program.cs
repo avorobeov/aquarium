@@ -10,21 +10,22 @@ namespace aquarium
     {
         static void Main(string[] args)
         {
-            List<Fish> fishs = new List<Fish> { new Fish("Олив",1,10),
+            List<Fish> fishes = new List<Fish> { new Fish("Олив",1,10),
                                                 new Fish("Аква", 1, 20),
                                                 new Fish("Сега",4,30)};
 
-            int maxCountFish = 10;
+            int NumberLives = 10;
 
-            Aquarium aquarium = new Aquarium(fishs, maxCountFish);
+            Aquarium aquarium = new Aquarium(fishes, NumberLives);
 
             string userInput;
             bool isExit = false;
 
             while (isExit == false)
             {
-                ShowMenu();
+                aquarium.TimeSkip();
 
+                ShowMenu();
                 userInput = Console.ReadLine();
 
                 switch (userInput)
@@ -38,16 +39,17 @@ namespace aquarium
                         break;
 
                     case "3":
-                        aquarium.StartGame();
-                        break;
-
-                    case "4":
                         aquarium.ShowFishs();
                         break;
 
-                    case "5":
+                    case "4":
                         isExit = true;
                         break;
+                }
+
+                if (aquarium.CountFishes == 0)
+                {
+                    ShowMessage("Игра окончена все рыбки умерли", ConsoleColor.Red);
                 }
             }
         }
@@ -56,7 +58,6 @@ namespace aquarium
         {
             ShowMessage("\nДля добавления рыбок нажмите 1\n" +
                      "\nДля удаления рыбок нажмите 2\n" +
-                     "\nДля запуска игры нажмите 3\n" +
                      "\nПоказать всех рыбок 4\n"+
                      "\nДля выхода нажмите 5\n", ConsoleColor.Yellow);
         }
@@ -76,61 +77,68 @@ namespace aquarium
     {
         public string Name { get; private set; }
         public int Age { get; private set; }
-        public int MaxAge { get; private set; }
+        public int NumberLives { get; private set; }
 
-        public Fish(string name, int age, int maxAge)
+        private int _minimumNumberLives = 0;
+
+        public Fish(string name, int age, int numberLives)
         {
             Age = age;
-            MaxAge = maxAge;
+            NumberLives = numberLives;
             Name = name;
         }
    
         public void ReduceLife()
         {
-            Age++;
+            if (NumberLives > _minimumNumberLives)
+            {
+                Age++;
+                NumberLives--;
+            }
+        }
+
+        public bool GetLives()
+        {
+            if (NumberLives <= _minimumNumberLives)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 
     class Aquarium
     {
-        private List<Fish> _fishs = new List<Fish>();
+        private List<Fish> _fishes = new List<Fish>();
+        public int CountFishes => _fishes.Count;
 
-        private int _maxCountFish;
-        private int _CountFish => _fishs.Count;
+        private int _maxCountFishes;
         private int _minAgeValue = 1;
 
         public Aquarium(List<Fish> fishs, int maxCountFish)
         {
-            _fishs = fishs;
-            _maxCountFish = maxCountFish;
+            _fishes = fishs;
+            _maxCountFishes = maxCountFish;
         }
 
-        public void StartGame()
+        public void TimeSkip()
         {
-            while (_fishs.Count != 0)
+            for (int i = 0; i < _fishes.Count; i++)
             {
-                for (int i = 0; i < _fishs.Count; i++)
-                {
-                    _fishs[i].ReduceLife();
+                _fishes[i].ReduceLife();
 
-                    if (_fishs[i].Age != _fishs[i].MaxAge)
-                    {
-                        ShowMessage($"Name: { _fishs[i].Name} Age:{ _fishs[i].Age} MaxAge:{ _fishs[i].MaxAge}", ConsoleColor.Blue);
-                    }
-                    else
-                    {
-                        TryDeleteFish(_fishs[i].Name);
-                    }
-                }
+                ShowMessage($"Index:{i} Name: { _fishes[i].Name} Age:{ _fishes[i].Age} NumberLives:{ _fishes[i].NumberLives} IsLives:{ _fishes[i].GetLives()}", ConsoleColor.Blue);
             }
-
-            ShowMessage("Игра окончена все рыбки умерли", ConsoleColor.Red);
+        
         }
 
         public void TryCreateFish()
         {
             string name;
-            int age, maxAge;
+            int age, numberLives;
 
             ShowMessage("Ведите имя рыбки", ConsoleColor.Yellow);
 
@@ -138,11 +146,11 @@ namespace aquarium
 
             age = GetNumber("Ведите возраст рыбки");
 
-            maxAge = GetNumber("Ведите максимальный возраст рыбки:");
+            numberLives = GetNumber("Ведите количество жизней рыбки:");
 
-            if (name != "" && age != _minAgeValue && maxAge > age && _CountFish <= _maxCountFish)
+            if (name != "" && age != _minAgeValue && numberLives > age && CountFishes <= _maxCountFishes)
             {
-                _fishs.Add(new Fish(name, age, maxAge));
+                _fishes.Add(new Fish(name, age, numberLives));
 
                 ShowMessage("Рыбка успешно добавлена в аквариум", ConsoleColor.Green);
             }
@@ -150,6 +158,45 @@ namespace aquarium
             {
                 ShowMessage("Ошибка ! \nДанные не прошли проверку", ConsoleColor.Red);
             }
+        }
+
+        public void TryDeleteFish()
+        {
+            int index = GetNumber("Ведите номер рыбки которую хотите достать");
+
+            for (int i = 0; i < _fishes.Count -1; i++)
+            {
+                if (index == i)
+                {
+                    _fishes.RemoveAt(i);
+                }
+            }
+        }
+
+        public void ShowFishs()
+        {
+            if (_fishes.Count != 0)
+            {
+                ShowMessage("Список рыб", ConsoleColor.Yellow);
+                for (int i = 0; i < _fishes.Count; i++)
+                {
+                    ShowMessage($"{_fishes[i].Name} её возраст {_fishes[i].Age}", ConsoleColor.Blue);
+                }
+            }
+            else
+            {
+                ShowMessage("Сейчас аквариум пуст", ConsoleColor.Red);
+            }
+        }
+
+        private void ShowMessage(string message, ConsoleColor color)
+        {
+            ConsoleColor preliminaryColor = Console.ForegroundColor;
+
+            Console.ForegroundColor = color;
+            Console.WriteLine(message + "\n");
+
+            Console.ForegroundColor = preliminaryColor;
         }
 
         private int GetNumber(string text)
@@ -176,52 +223,6 @@ namespace aquarium
 
             return meaning;
         }
-      
-        public void TryDeleteFish(string name = "")
-        {
-            if (name == "")
-            {
-                ShowMessage("Ведите имя рыбки которую хотите достать", ConsoleColor.Yellow);
 
-                name = Console.ReadLine();
-            }
-
-            Fish fish = _fishs.Find(fishName => fishName.Name.Contains(name));
-
-            if (fish != null)
-            {
-                _fishs.Remove(fish);
-            }
-            else
-            {
-                ShowMessage("Такой рыбки нет в аквариуме", ConsoleColor.Red);
-            }
-        }
-
-        public void ShowFishs()
-        {
-            if (_fishs.Count != 0)
-            {
-                ShowMessage("Список рыб", ConsoleColor.Yellow);
-                for (int i = 0; i < _fishs.Count; i++)
-                {
-                    ShowMessage($"{_fishs[i].Name} её возраст {_fishs[i].Age}", ConsoleColor.Blue);
-                }
-            }
-            else
-            {
-                ShowMessage("Сейчас аквариум пуст", ConsoleColor.Red);
-            }
-        }
-
-        private void ShowMessage(string message, ConsoleColor color)
-        {
-            ConsoleColor preliminaryColor = Console.ForegroundColor;
-
-            Console.ForegroundColor = color;
-            Console.WriteLine(message + "\n");
-
-            Console.ForegroundColor = preliminaryColor;
-        }
     }
 }
