@@ -75,11 +75,12 @@ namespace aquarium
 
     class Fish
     {
+        private int _minimumNumberLives = 0;
+
         public string Name { get; private set; }
         public int Age { get; private set; }
         public int NumberLives { get; private set; }
 
-        private int _minimumNumberLives = 0;
 
         public Fish(string name, int age, int numberLives)
         {
