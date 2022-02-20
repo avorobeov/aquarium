@@ -58,7 +58,7 @@ namespace aquarium
         {
             ShowMessage("\nДля добавления рыбок нажмите 1\n" +
                      "\nДля удаления рыбок нажмите 2\n" +
-                     "\nПоказать всех рыбок 4\n"+
+                     "\nПоказать всех рыбок 4\n" +
                      "\nДля выхода нажмите 5\n", ConsoleColor.Yellow);
         }
 
@@ -88,7 +88,7 @@ namespace aquarium
             MaxAge = maxAge;
             Name = name;
         }
-   
+
         public void AddAge()
         {
             if (Age <= MaxAge)
@@ -126,7 +126,7 @@ namespace aquarium
 
                 ShowMessage($"Index:{i} Name: { _fishes[i].Name} Age:{ _fishes[i].Age} MaxAge{_fishes[i].MaxAge} IsLives:{ _fishes[i].GetLives()}", ConsoleColor.Blue);
             }
-        
+
         }
 
         public void TryCreateFish()
@@ -142,7 +142,7 @@ namespace aquarium
 
             numberLives = GetNumber("Ведите количество жизней рыбки:");
 
-            if (name != "" && age != _minAgeValue  && CountFishes <= _maxCountFishes)
+            if (name != "" && age != _minAgeValue && CountFishes <= _maxCountFishes)
             {
                 _fishes.Add(new Fish(name, age, numberLives));
 
@@ -158,7 +158,7 @@ namespace aquarium
         {
             int index = GetNumber("Ведите номер рыбки которую хотите достать");
 
-            if (index <= 0 && index <= _fishes.Count &&_fishes.Count != 0)
+            if (index <= 0 && index <= _fishes.Count && _fishes.Count != 0)
             {
                 _fishes.RemoveAt(index);
             }
