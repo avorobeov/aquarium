@@ -14,9 +14,9 @@ namespace aquarium
                                                 new Fish("Аква", 1, 20),
                                                 new Fish("Сега",4,30)};
 
-            int NumberLives = 10;
+            int maxCountFishes = 10;
 
-            Aquarium aquarium = new Aquarium(fishes, NumberLives);
+            Aquarium aquarium = new Aquarium(fishes, maxCountFishes);
 
             string userInput;
             bool isExit = false;
@@ -149,7 +149,7 @@ namespace aquarium
 
             numberLives = GetNumber("Ведите количество жизней рыбки:");
 
-            if (name != "" && age != _minAgeValue && numberLives > age && CountFishes <= _maxCountFishes)
+            if (name != "" && age != _minAgeValue  && CountFishes <= _maxCountFishes)
             {
                 _fishes.Add(new Fish(name, age, numberLives));
 
@@ -181,7 +181,7 @@ namespace aquarium
                 ShowMessage("Список рыб", ConsoleColor.Yellow);
                 for (int i = 0; i < _fishes.Count; i++)
                 {
-                    ShowMessage($"{_fishes[i].Name} её возраст {_fishes[i].Age}", ConsoleColor.Blue);
+                    ShowMessage($"{_fishes[i].Name} её возраст {_fishes[i].Age} Количество жизней {_fishes[i].NumberLives}", ConsoleColor.Blue);
                 }
             }
             else
