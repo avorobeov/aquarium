@@ -75,7 +75,7 @@ namespace aquarium
 
     class Fish
     {
-        private int _minimumFishAge = 0;
+        private int _minimumAge = 0;
 
         public string Name { get; private set; }
         public int Age { get; private set; }
@@ -99,7 +99,7 @@ namespace aquarium
 
         public bool GetLives()
         {
-            return Age <= MaxAge && Age > _minimumFishAge;
+            return Age <= MaxAge && Age > _minimumAge;
         }
     }
 
